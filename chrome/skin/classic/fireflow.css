@@ -15,3 +15,7 @@
     font-style: italic;
     color: #555555;
 }
+
+.hide{
+	display:none;
+}
