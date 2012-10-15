@@ -319,6 +319,7 @@ FBL.ns(function() { with (FBL) {
 
                                      },
                                      showTreeInScriptPanel:function(context) {
+                                    	 
                                          var panel = context.getPanel("fFlow", true);
                                          var scriptPanel = context.getPanel("fFlowScriptPanel", true);
                                          this.logMessage(panel.panelNode.innerHTML);
@@ -335,6 +336,81 @@ FBL.ns(function() { with (FBL) {
                                          }catch(e) {
                                              this.logError(e);
                                          }
+                                     },
+                                     showScriptsListPanel:function(context) {
+                                    	 this.logMessage("About the toggle tracking path");
+                                         // Error prone: so irrespective of how sure u r keep it in try catch
+                                         try{
+                                             if (this.jsd) {
+                                                 if(this.fireFlowing) {
+                                                     this.jsd.pause();
+                                                     while (this.jsd.pauseDepth > 0) {  // unwind completely
+                                                         this.jsd.unPause();
+                                                     }
+                                                     this.logMessage("Stopping the jsd debugger");
+                                                     this.jsd.functionHook = this.originalFunctionHook;
+                                                     //this.jsd.off();
+													 this.fireFlowing = false;
+                                                     this.showTree(context);
+                                                     this.logMessage("Stopped the jsd debugger");
+                                                 } else {
+                                                     this.startDebugger(context);
+                                                 }
+                                             } else {
+                                                 try{
+                                                     this.jsd = Cc["@mozilla.org/js/jsd/debugger-service;1"].getService(Ci.jsdIDebuggerService);
+                                                     this.startDebugger(context);
+                                                 } catch(e) {
+                                                     this.logError(e);
+                                                 }
+                                             }
+                                         }catch(e){
+                                             this.logError(e);
+                                         }
+                                     },
+                                    //show all scripts typed in the text box
+                                     showExcludedScriptsList: function(context){
+                                    	 this.logMessage("Before applying the exclude filter");
+                                    	 var panel = context.getPanel("fFlow", true);
+                                    	 var memberNodes = panel.panelNode.getElementsByClassName("memberRow");
+                                    	 this._toggleMemberNodesDisplay("exclude",memberNodes);
+                                    	 this.logMessage("After applying the exclude filter");
+                                     },
+                                     //show all scripts typed in the text box
+                                     showIncludedScriptsList: function(context){
+                                    	 this.logMessage("Before applying the include filter");
+                                    	 var panel = context.getPanel("fFlow", true);
+                                    	 var memberNodes = panel.panelNode.getElementsByClassName("memberRow");
+                                    	 this._toggleMemberNodesDisplay("include",memberNodes); 
+                                    	 this.logMessage("After applying the include filter");
+                                     },
+                                     /**
+                                      * type=include -->show only the member nodes having text value
+                                      * type=exclude -->show all the other member nodes doesn't having text value
+                                      */
+                                     _toggleMemberNodesDisplay:function(type,memberNodes){
+                                    	 var inputText = document.getElementById("js-filter").value;
+                                    	 var regex = new RegExp("^"+inputText+"$");
+                                         for(var i=1,j=memberNodes.length;i<j;i++){
+                                        	 var memberNode = memberNodes[i];
+                                        	 //Remove all the member nodes contain the class name "hide"
+                                        	 if(memberNode.classList.contains("hide")){
+                                        		 memberNode.classList.remove("hide");
+                                        	  }
+                                        	var scriptLink = memberNode.getElementsByClassName("scriptLink");
+                                        	if(type == "include"){
+                                        		//add class name to all the elements that doesn't have the script
+                                        		if(!regex.test(scriptLink[0].innerHTML)){
+                                        			memberNode.classList.add("hide");
+                                            	}
+                                        	}else{
+                                        		//add class name to all the elements that contains the script
+                                        		if(regex.test(scriptLink[0].innerHTML)){
+                                            		memberNode.classList.add("hide");	
+                                            	}
+                                        	}
+                                        }  
+                                        
                                      },
                                      // AMO review does not dig onclick, so decorate this separately
                                      _decorateTemplate: function(panelNode) {

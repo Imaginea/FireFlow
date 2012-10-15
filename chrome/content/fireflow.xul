@@ -9,6 +9,9 @@
     <command id="cmd_ftoggleFlow" oncommand="Firebug.FFlowModule.toggleTrackingPath(Firebug.currentContext)"/>
     <command id="cmd_fClear" oncommand="Firebug.FFlowModule.clearPanel(Firebug.currentContext)"/>
     <command id="cmd_fShow" oncommand="Firebug.FFlowModule.showTreeInScriptPanel(Firebug.currentContext)"/>
+    <command id="cmd_exclude_files" oncommand="Firebug.FFlowModule.showExcludedScriptsList(Firebug.currentContext)"/>
+    <command id="cmd_include_files" oncommand="Firebug.FFlowModule.showIncludedScriptsList(Firebug.currentContext)"/>
+    
   </commandset> 
 
   <toolbar id="fbToolbar" align="center" >
@@ -26,6 +29,9 @@
                        class="toolbar-text-button"
                        tooltiptext="&show.tooltip;"
                        command="cmd_fShow" />
+        <toolbarbutton label="Include" type="radio" group="RadioGroup" command="cmd_include_files" />
+        <toolbarbutton label="Exclude" type="radio" group="RadioGroup" command="cmd_exclude_files" />    
+        <textbox id="js-filter" type="autocomplete" inputtooltiptext="&filter.label;" />
       </hbox>
     </hbox>
   </toolbar>
