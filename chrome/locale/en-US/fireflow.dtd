@@ -4,3 +4,4 @@
 <!ENTITY clear.label "Clear">
 <!ENTITY show.label "Show in Script Panel">
 <!ENTITY show.tooltip "Show the tracekd path in Script Panel">
+<!ENTITY filter.label "Filter">
