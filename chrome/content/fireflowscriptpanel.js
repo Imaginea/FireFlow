@@ -14,7 +14,7 @@ FFlowScriptPanel.prototype = extend(Firebug.Panel,
     initialize: function(context, doc)
     {
         Firebug.Panel.initialize.apply(this, arguments);
-        appendStylesheet(doc, "chrome://fireflow/skin/classic/fireflow.css");
+        appendStylesheet(doc, "chrome://fireflow/skin/fireflow.css");
     },
 
     show: function(state)
