@@ -140,9 +140,6 @@ Firebug.FFlowModule = extend(Firebug.Module,
 {
      initialize: function(prefDomain, prefNames)
      {
-         if (Firebug.TraceModule && Firebug.TraceModule.addListener)
-             Firebug.TraceModule.addListener(this.TraceListener);
-
          Firebug.Module.initialize.apply(this, arguments);
 
          var prefs = getPrefs();
@@ -158,9 +155,6 @@ Firebug.FFlowModule = extend(Firebug.Module,
 
          var prefs = getPrefs();
          prefs.removeObserver(Firebug.prefDomain, this, false);
-
-         if (Firebug.TraceModule && Firebug.TraceModule.removeListener)
-             Firebug.TraceModule.removeListener(this.TraceListener);
      },
 
      internationalizeUI: function(doc)
