@@ -9,6 +9,11 @@ FBL.ns(function() { with (FBL) {
     // Register string bundle for $STR method
     Firebug.registerStringBundle("chrome://fireflow/locale/fireflow.properties");
 
+    function getPrefs()
+    {
+        return CCSV('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
+    }
+
     function FFlowPanel() {}
     FFlowPanel.prototype = extend(Firebug.Panel,
                                   {
@@ -84,28 +89,6 @@ FBL.ns(function() { with (FBL) {
 										  this.openLink(url);
 										  
                                       },
-									  
-									  /**
-									   * Get a handle to a service.
-									   * @param {string} className The class name.
-									   * @param {string} interfaceName The interface name.
-									   */
-									  CCSV: function(className, interfaceName) {
-										var classObj = Cc[className];
-										var ifaceObj = Ci[interfaceName];
-										if (!classObj || !ifaceObj) {
-										  return null;
-										}
-										return classObj.getService(ifaceObj);
-									  },
-
-									  /**
-									   * Get the browser preferences object.
-									   */
-									  getPrefs: function() {
-										return this.CCSV(
-											'@mozilla.org/preferences-service;1', 'nsIPrefBranch');
-									  },
 
 									   /**
 									   * Check if an integer preference is set.  If so, return its value.
@@ -116,7 +99,7 @@ FBL.ns(function() { with (FBL) {
 									   * @return {number} The preference value.
 									   */
 									  getIntPref: function(prefName, defaultValue) {
-										var prefs = this.getPrefs();
+										var prefs = getPrefs();
 										if (prefs.getPrefType(prefName) == prefs.PREF_INT) {
 										  return prefs.getIntPref(prefName);
 										} else {
@@ -150,6 +133,7 @@ FBL.ns(function() { with (FBL) {
 
                                          Firebug.Module.initialize.apply(this, arguments);
 
+                                         var prefs = getPrefs();
                                          prefs.addObserver(Firebug.prefDomain, this, false);
                                          this.jsd, this.fireFlowing;
                                          this.started = false;
@@ -160,6 +144,7 @@ FBL.ns(function() { with (FBL) {
                                      {
                                          Firebug.Module.shutdown.apply(this, arguments);
 
+                                         var prefs = getPrefs();
                                          prefs.removeObserver(Firebug.prefDomain, this, false);
 
                                          if (Firebug.TraceModule && Firebug.TraceModule.removeListener)
